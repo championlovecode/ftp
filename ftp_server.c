@@ -65,7 +65,8 @@ static void init_server()
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_flags = AI_PASSIVE;
 
-  s = getaddrinfo(hostname, "ftp", &hints, &result);
+  //s = getaddrinfo(hostname, "ftp", &hints, &result);
+  s = getaddrinfo("192.168.1.155", "ftp", &hints, &result);
   if(s != 0) {
     fprintf(stderr, "getaddinfo: %s\n", gai_strerror(s));
     exit(EXIT_FAILURE);
@@ -133,7 +134,8 @@ static int handle_line_request(struct serv_cntl_conn *cntl, char *linerecvd)
   case CMD_LIST:    goto trans;
   case CMD_PASS:
     if (cntl->user) {
-      if (checkpasswd(cntl->user, params) == 0) {
+      if (checkpasswd(cntl->user, params) == 0) 
+	  {
 	snprintf(cntlsendbuf, LINELEN, "230 User logged in, proceed.\n");
 	cntl->logon = 1;
       }
@@ -240,8 +242,11 @@ static int handle_request(struct serv_cntl_conn *cntl)
 	return -1;
       }
     }
-    if (linerecvd) {
-      fprintf(stdout, "LOG: received line -->  %s\n", linerecvd);
+	
+	if ((linerecvd != NULL)&&n>2) {
+	  printf("\nn=%d\n",n);
+	  printf("\n linerecvd =%s\n",linerecvd);
+	  fprintf(stdout, "LOG: received line -->  %s\n", linerecvd);
       handle_line_request(cntl, linerecvd);
     }
   } while (n > 0 && linerecvd != NULL);
@@ -339,7 +344,7 @@ int main(int argc, const char* argv[])
 {
   int err;
   pthread_t tid;
-  strcpy(homedir, "/home/kuangf/ftptmp/");
+  strcpy(homedir, "/home/ftpdir/");
   init_server();
   
 #if 1

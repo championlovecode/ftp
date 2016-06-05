@@ -47,7 +47,9 @@ int init_data_server()
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
-    if ((err = getaddrinfo(localname,0,&hints, &alist)) != 0) {
+    //if ((err = getaddrinfo(localname,0,&hints, &alist)) != 0) 
+	if ((err = getaddrinfo("192.168.1.155",0,&hints, &alist)) != 0) 
+	{
       fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(err));
       exit(EXIT_FAILURE);
     }
@@ -179,6 +181,7 @@ static void transfer_data()
     copybetween2fd(STDOUT_FILENO, data_sockfd);
     break;
   case CMD_RETR:
+  	printf("\n CMD_RETR path=%s\n",path);
     if (!filename) 
       break;
     localfd = open(path, O_CREAT|O_WRONLY);
@@ -374,8 +377,8 @@ int main(int argc, const char *argv[])
   peername = argv[1];
   gethostname(localname, HOST_NAME_MAX+1);
 
-  strcpy(homedir, "/home/kuangf/");
-  strcpy(ftpdir, "/home/kuangf/ftptmp/");
+  strcpy(homedir, "/home/ftpdir/");
+  strcpy(ftpdir, "/home/ftpdir/ftptmp/");
 
   init_cntl_connection();
 
